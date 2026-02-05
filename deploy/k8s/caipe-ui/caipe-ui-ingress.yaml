@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: caipe-ui
+  namespace: ai-platform-engineering
+  labels:
+    app.kubernetes.io/name: caipe-ui
+    app.kubernetes.io/component: ui
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: caipe-ui.local
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: caipe-ui
+                port:
+                  number: 3000

@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - caipe-ui-configmap.yaml
+  - caipe-ui-secret.yaml
+  - caipe-ui-deployment.yaml
+  - caipe-ui-service.yaml
+  - mongodb-secret.yaml
+  - mongodb-pvc.yaml
+  - mongodb-deployment.yaml
+  - mongodb-service.yaml

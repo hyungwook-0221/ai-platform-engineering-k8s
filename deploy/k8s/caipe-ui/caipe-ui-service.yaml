@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: caipe-ui
+  namespace: ai-platform-engineering
+  labels:
+    app.kubernetes.io/name: caipe-ui
+    app.kubernetes.io/component: ui
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: caipe-ui
+    app.kubernetes.io/component: ui
+  ports:
+    - name: http
+      port: 3000
+      targetPort: http

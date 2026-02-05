@@ -109,14 +109,20 @@ function getRuntimeEnv(key: string): string | undefined {
  * Priority:
  * 1. Runtime: window.__ENV__.NEXT_PUBLIC_A2A_BASE_URL (injected at container start)
  * 2. Build-time: NEXT_PUBLIC_CAIPE_URL or NEXT_PUBLIC_A2A_BASE_URL
- * 3. Server-side: CAIPE_URL or A2A_ENDPOINT
- * 4. Default: http://localhost:8000 (dev) or http://caipe-supervisor:8000 (prod/docker)
+ * 3. Client default: /api/a2a (server-side proxy)
+ * 4. Server-side: CAIPE_URL or A2A_ENDPOINT
+ * 5. Default: http://localhost:8000 (dev) or http://caipe-supervisor:8000 (prod/docker)
  */
 function getCaipeUrl(): string {
   // Runtime or build-time environment variable
   const envUrl = getRuntimeEnv('NEXT_PUBLIC_A2A_BASE_URL') || getRuntimeEnv('NEXT_PUBLIC_CAIPE_URL');
   if (envUrl) {
     return envUrl;
+  }
+
+  // Client-side default: always go through the Next.js proxy
+  if (typeof window !== 'undefined') {
+    return '/api/a2a';
   }
 
   // Server-side environment variable

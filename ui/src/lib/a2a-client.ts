@@ -507,8 +507,12 @@ let clientInstance: A2AClient | null = null;
 
 export function getA2AClient(endpoint?: string): A2AClient {
   if (!clientInstance || endpoint) {
+    const defaultEndpoint =
+      typeof window !== "undefined"
+        ? "/api/a2a"
+        : process.env.A2A_ENDPOINT || "http://localhost:8000";
     clientInstance = new A2AClient({
-      endpoint: endpoint || process.env.A2A_ENDPOINT || "http://localhost:8000",
+      endpoint: endpoint || defaultEndpoint,
     });
   }
   return clientInstance;

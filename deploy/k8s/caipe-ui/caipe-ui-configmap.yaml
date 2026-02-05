@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: caipe-ui-config
+  namespace: ai-platform-engineering
+  labels:
+    app.kubernetes.io/name: caipe-ui
+    app.kubernetes.io/component: ui
+data:
+  NODE_ENV: "production"
+  CAIPE_URL: "http://ai-platform-engineering-supervisor-agent:8000"
+  A2A_ENDPOINT: "http://ai-platform-engineering-supervisor-agent:8000"
+  NEXT_PUBLIC_SSO_ENABLED: "false"
+  NEXT_PUBLIC_ENABLE_SUBAGENT_CARDS: "true"
+  RAG_SERVER_URL: "http://ai-platform-engineering-rag-server:9446"
+  NEXT_PUBLIC_RAG_URL: "http://ai-platform-engineering-rag-server:9446"
+  NEXT_PUBLIC_RAG_WEBUI_URL: "http://ai-platform-engineering-rag-webui:9447"
+  NEXTAUTH_URL: "http://caipe-ui.local"

@@ -226,7 +226,7 @@ describe('config - Extended', () => {
 
   describe('CAIPE URL configuration', () => {
     it('should use default CAIPE URL', () => {
-      expect(config.caipeUrl).toBe('http://localhost:8000');
+      expect(config.caipeUrl).toBe('/api/a2a');
     });
 
     it('should use NEXT_PUBLIC_CAIPE_URL when set', () => {
