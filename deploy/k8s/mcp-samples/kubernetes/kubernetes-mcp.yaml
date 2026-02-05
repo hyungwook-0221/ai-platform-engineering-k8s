@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubernetes-mcp
+  namespace: ai-platform-engineering
+  labels:
+    app.kubernetes.io/name: kubernetes-mcp
+    app.kubernetes.io/component: mcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: kubernetes-mcp
+      app.kubernetes.io/component: mcp
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: kubernetes-mcp
+        app.kubernetes.io/component: mcp
+    spec:
+      containers:
+        - name: kubernetes-mcp
+          image: your-registry.example.com/mcp-kubernetes:0.1.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          env:
+            - name: MCP_HOST
+              value: "0.0.0.0"
+            - name: MCP_PORT
+              value: "8000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubernetes-mcp
+  namespace: ai-platform-engineering
+  labels:
+    app.kubernetes.io/name: kubernetes-mcp
+    app.kubernetes.io/component: mcp
+spec:
+  type: ClusterIP
+  selector:
+    app.kubernetes.io/name: kubernetes-mcp
+    app.kubernetes.io/component: mcp
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http

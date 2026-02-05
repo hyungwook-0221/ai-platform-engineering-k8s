@@ -157,11 +157,25 @@ kubectl -n ai-platform-engineering port-forward svc/caipe-ui 3000:3000
 - **헬름 업그레이드 실패**
   - `helm upgrade`에서 `--force-replace` 제거
 
-## 7) EKS 운영 배포 체크리스트
+## 7) MCP 서버 추가 방법 (샘플 포함)
+
+Platform Engineering에서 유용한 MCP 예시로 **Kubernetes MCP**를 추가했습니다.
+
+- 샘플 경로: `deploy/k8s/mcp-samples/kubernetes`
+- Dockerfile: `deploy/k8s/mcp-samples/kubernetes/Dockerfile`
+- 매니페스트: `deploy/k8s/mcp-samples/kubernetes/kubernetes-mcp.yaml`
+
+### 빠른 적용 흐름
+1) 이미지 빌드/푸시
+2) K8s에 MCP 서비스 배포
+3) 에이전트에 `MCP_MODE=http` + `MCP_HOST`/`MCP_PORT` 연결
+
+자세한 단계는 `deploy/k8s/mcp-samples/kubernetes/README.md` 참고.
+
+## 8) EKS 운영 배포 체크리스트
 
 - [ ] 이미지 빌드/푸시 완료 (UI, AWS Agent)
 - [ ] `override-values.yaml`에 레지스트리/태그 반영
 - [ ] `CAIPE_URL`을 내부 서비스로 설정
 - [ ] Ingress + Route53 + ACM 적용
 - [ ] UI 접근 및 A2A 응답 확인
-
