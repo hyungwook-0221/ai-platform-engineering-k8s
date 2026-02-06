@@ -87,6 +87,7 @@ def get_agent_card(host: str, port: int) -> AgentCard:
     enable_eks_mcp = os.getenv("ENABLE_EKS_MCP", "true").lower() == "true"
     enable_cost_explorer_mcp = os.getenv("ENABLE_COST_EXPLORER_MCP", "true").lower() == "true"
     enable_iam_mcp = os.getenv("ENABLE_IAM_MCP", "true").lower() == "true"
+    enable_ec2_mcp = os.getenv("ENABLE_EC2_MCP", "false").lower() == "true"
 
     capabilities = AgentCapabilities(streaming=True, pushNotifications=True)
 
@@ -152,6 +153,22 @@ def get_agent_card(host: str, port: int) -> AgentCard:
         )
         skills.append(iam_skill)
 
+    if enable_ec2_mcp:
+        ec2_skill = AgentSkill(
+            id='aws-ec2',
+            name='AWS EC2 & VPC Operations',
+            description='Performs EC2 and VPC resource discovery and inspection.',
+            tags=['aws', 'ec2', 'vpc', 'network', 'cloud', 'infra'],
+            examples=[
+                'List EC2 instances in ap-northeast-2',
+                'Show VPCs and subnets in ap-northeast-2',
+                'Describe security groups for a VPC',
+                'List EC2 instances with tag Environment=prod',
+                'Show EC2 instance details for i-1234567890abcdef0'
+            ],
+        )
+        skills.append(ec2_skill)
+
     # Build description based on enabled capabilities
     description_parts = ["AI agent for comprehensive AWS management including:"]
 
@@ -163,6 +180,9 @@ def get_agent_card(host: str, port: int) -> AgentCard:
 
     if enable_iam_mcp:
         description_parts.append(" IAM security and access management,")
+
+    if enable_ec2_mcp:
+        description_parts.append(" EC2 and VPC resource discovery,")
 
     description_parts.append(" using AWS native tools and best practices.")
     description = "".join(description_parts)

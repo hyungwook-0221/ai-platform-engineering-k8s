@@ -51,6 +51,7 @@ class AWSAgent(BaseStrandsAgent):
         # Check which capabilities are enabled
         enable_eks_mcp = os.getenv("ENABLE_EKS_MCP", "true").lower() == "true"
         enable_cost_explorer_mcp = os.getenv("ENABLE_COST_EXPLORER_MCP", "false").lower() == "true"
+        enable_ec2_mcp = os.getenv("ENABLE_EC2_MCP", "false").lower() == "true"
         enable_terraform_mcp = os.getenv("ENABLE_TERRAFORM_MCP", "false").lower() == "true"
         enable_aws_documentation_mcp = os.getenv("ENABLE_AWS_DOCUMENTATION_MCP", "false").lower() == "true"
         enable_cloudtrail_mcp = os.getenv("ENABLE_CLOUDTRAIL_MCP", "false").lower() == "true"
@@ -108,6 +109,14 @@ class AWSAgent(BaseStrandsAgent):
                 "- Provide spending recommendations\n"
                 "- Analyze Reserved Instance and Savings Plans utilization\n"
                 "- Monitor budget alerts and cost anomalies\n\n"
+            ])
+
+        if enable_ec2_mcp:
+            system_prompt_parts.extend([
+                "**EC2 & VPC Management:**\n"
+                "- List EC2 instances, VPCs, subnets, and security groups\n"
+                "- Query instance details, tags, and states\n"
+                "- Inspect VPC topology and network configuration\n\n"
             ])
 
         if enable_terraform_mcp:
@@ -216,6 +225,7 @@ class AWSAgent(BaseStrandsAgent):
         enable_eks_mcp = os.getenv("ENABLE_EKS_MCP", "true").lower() == "true"
         enable_cost_explorer_mcp = os.getenv("ENABLE_COST_EXPLORER_MCP", "true").lower() == "true"
         enable_iam_mcp = os.getenv("ENABLE_IAM_MCP", "true").lower() == "true"
+        enable_ec2_mcp = os.getenv("ENABLE_EC2_MCP", "false").lower() == "true"
         enable_terraform_mcp = os.getenv("ENABLE_TERRAFORM_MCP", "false").lower() == "true"
         enable_aws_documentation_mcp = os.getenv("ENABLE_AWS_DOCUMENTATION_MCP", "false").lower() == "true"
         enable_cloudtrail_mcp = os.getenv("ENABLE_CLOUDTRAIL_MCP", "false").lower() == "true"
@@ -226,6 +236,7 @@ class AWSAgent(BaseStrandsAgent):
 
         logger.info(
             f"MCP Configuration - EKS: {enable_eks_mcp}, Cost Explorer: {enable_cost_explorer_mcp}, IAM: {enable_iam_mcp}, "
+            f"EC2: {enable_ec2_mcp}, "
             f"Terraform: {enable_terraform_mcp}, AWS Docs: {enable_aws_documentation_mcp}, CloudTrail: {enable_cloudtrail_mcp}, "
             f"CloudWatch: {enable_cloudwatch_mcp}, Postgres: {enable_postgres_mcp}, AWS Support: {enable_aws_support_mcp}, "
             f"CDK: {enable_cdk_mcp}"
@@ -313,6 +324,26 @@ class AWSAgent(BaseStrandsAgent):
                 )
             ))
             clients.append(("iam", iam_client))
+
+        if enable_ec2_mcp:
+            logger.info("Creating EC2 MCP client...")
+            if system == "windows":
+                ec2_command_args = [
+                    "--from", "awslabs.ec2-mcp-server@latest",
+                    "awslabs.ec2-mcp-server.exe"
+                ]
+            else:
+                ec2_command_args = [
+                    "awslabs.ec2-mcp-server@latest"
+                ]
+            ec2_client = MCPClient(lambda: stdio_client(
+                StdioServerParameters(
+                    command="uvx",
+                    args=ec2_command_args,
+                    env=env_vars
+                )
+            ))
+            clients.append(("ec2", ec2_client))
 
         if enable_terraform_mcp:
             logger.info("Creating Terraform MCP client...")

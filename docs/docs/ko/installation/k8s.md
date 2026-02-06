@@ -172,7 +172,20 @@ Platform Engineering에서 유용한 MCP 예시로 **Kubernetes MCP**를 추가�
 
 자세한 단계는 `deploy/k8s/mcp-samples/kubernetes/README.md` 참고.
 
-## 8) EKS 운영 배포 체크리스트
+## 8) EC2/VPC 조회용 MCP 활성화 (AWS 공식)
+
+EC2/VPC 조회는 기본 AWS MCP(EKS/IAM/Cost)만으로는 부족합니다.  
+AWS 공식 EC2 MCP를 추가로 켜면 EC2/VPC 조회가 가능합니다.
+
+Helm values에 아래 환경변수를 추가하세요.
+
+```yaml
+agent-aws:
+  env:
+    ENABLE_EC2_MCP: "true"
+```
+
+## 9) EKS 운영 배포 체크리스트
 
 - [ ] 이미지 빌드/푸시 완료 (UI, AWS Agent)
 - [ ] `override-values.yaml`에 레지스트리/태그 반영
